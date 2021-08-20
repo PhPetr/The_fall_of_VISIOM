@@ -1,0 +1,6 @@
+wooden sword (+5),5,
+wooden sword (+5),5,
+wooden sword (+5),5,
+iron sword (+10),10,
+iron sword (+10),10,
+diamond sword (+15),15,

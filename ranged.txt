@@ -1,0 +1,6 @@
+wooden bow (+5),5,
+wooden bow (+5),5,
+wooden bow (+5),5,
+iron bow (+10),10,
+iron bow (+10),10,
+diamond bow (+15),15,

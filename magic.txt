@@ -1,0 +1,6 @@
+wooden staff (+5), 5,
+wooden staff (+5), 5,
+wooden staff (+5), 5,
+iron staff (+10), 10,
+iron staff (+10), 10,
+diamond staff (+15), 15,

@@ -1,0 +1,6 @@
+wooden shield (+5), 5,
+wooden shield (+5), 5,
+wooden shield (+5), 5,
+iron shield (+10), 10,
+iron shield (+10), 10,
+diamond shield (+15), 15,

@@ -1,0 +1,4 @@
+4 Leaf clover (+5),5,luck,
+gemstone pendant (+10),10,luck,
+health potion (+10),10,health,
+large health potion (+30),30,health,

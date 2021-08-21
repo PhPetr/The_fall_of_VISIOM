@@ -3,6 +3,8 @@ import time
 from pprint import pprint
 import math
 import sys
+import pickle
+import os.path
 
 developer = True#TODO: remember to set it false before release
 
@@ -77,7 +79,7 @@ def crateClass():
     role = input(" Are you more strategic (1) or more of a warrior (2)?...")
     print()
     while role != "1" and role != "2":
-        text_animation("Invalid selection")
+        text_animation("Invalid selection\n")
         role = input(" Are you more strategic (1) or more of a warrior (2)?...")
 
     if role == "1":
@@ -92,7 +94,7 @@ def crateClass():
     offense = input(" Are you more of bow and arrow user (1) or a magic user(2)?...")
     print()
     while offense != "1" and offense != "2":
-        text_animation("Invalid selection")
+        text_animation("Invalid selection\n")
         offense = input("\n Are you more of bow and arrow user (1) or a magic user(2)?...")
         print()
 
@@ -139,6 +141,15 @@ def recovery(character, maxHP):
         text_animation('"Oh no. Y-You are i-in-injured. I\'ll h-heal y-you, so d-don\'t wo-worry,"Vega said.')
         text_animation("You have healed. Your current stats:")
         pprint(vars(stats), sort_dicts=False)
+        time.sleep(3)
+
+def current_stats():
+    global character
+    text_animation("")
+    text_animation("Your current stats:\n")
+    pprint(vars(character), sort_dicts=False)
+    text_animation("")
+    time.sleep(4)
 
 ##### Enemy #####
 class enemy:
@@ -219,18 +230,18 @@ def enemyAttack(hitChance, attackValue, name, defence, specialValue):
         if specialLoss <= 0:
             print()
             text_animation(name + "is winding up for a SPECIAL attack...")
-            print("The special attack hits hero, but it dealt 0 damage.")
+            text_animation("The special attack hits hero, but it dealt 0 damage.")
             return 0
         else:
             print()
             text_animation(name + "is winding up for a SPECIAL attack...")
             hit = random.randint(0, 10)
             if hitChance >= hit:
-                print("The special attack hits the hero!!!")
-                print("You stagger losing...", specialLoss, "health.")
+                text_animation("The special attack hits the hero!!!")
+                text_animation("You stagger losing..." + str(specialLoss) + "health.")
                 return math.ceil(specialLoss)
             else:
-                print("The enemy misses")
+                text_animation("The enemy misses")
                 return 0
     else:
 
@@ -239,18 +250,18 @@ def enemyAttack(hitChance, attackValue, name, defence, specialValue):
         if loss <= 0:
             print()
             text_animation(name + "is winding up for an attack...")
-            print("The attack hits hero, but it dealt 0 damage.")
+            text_animation("The attack hits hero, but it dealt 0 damage.")
             return 0
         else:
             print()
             text_animation(name + "is winding up for an attack...")
             hit = random.randint(0, 10)
             if hitChance >= hit:
-                print("The attack hits the hero!!!")
-                print("You stagger losing...", loss, "health.")
+                text_animation("The attack hits the hero!!!")
+                text_animation("You stagger losing..." + str(loss) + "health.")
                 return math.ceil(loss)
             else:
-                print("The enemy misses")
+                text_animation("The enemy misses")
                 return 0
 
 
@@ -275,7 +286,7 @@ def isDead(health):
 def loot(luck, genCharacter):
     lootChance = random.randint(0, 4)
     if luck < lootChance:
-        print("\nNO LOOT FOR YOU!")
+        text_animation("\nNO LOOT FOR YOU!")
 
     else:
         tableNum = random.randint(0, 4)
@@ -284,7 +295,7 @@ def loot(luck, genCharacter):
         file = open(itemType + ".txt", "r")
         lines = file.readlines()
 
-        text_animation("\nThe enemy dropped a")
+        text_animation("\nThe enemy dropped a ")
 
         item = random.randint(0, len(lines) - 1)
 
@@ -294,7 +305,7 @@ def loot(luck, genCharacter):
         name = splitItemLine[0]
         value = int(splitItemLine[1])
 
-        print(name)
+        text_animation(name)
 
         if itemType == "attack":
             genCharacter.setAttack(genCharacter.getAttack() + value)
@@ -329,6 +340,7 @@ def loot(luck, genCharacter):
     text_animation("Your current stats")
     pprint(vars(stats), sort_dicts=False)
     print()
+    time.sleep(4)
 
 
 def fightOver(enemyDead):
@@ -347,16 +359,17 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
         text_animation("Its a..." + genEnemy.getName() + "!")
     text_animation("\nCheck out its stats..")
     pprint(vars(genEnemy), sort_dicts=False)
+    time.sleep(4)
 
     battle = True
 
     while battle == True:
-        print("Types of attacks: \n1. sword attack \n2. ranged attack \n3. magic attack")
+        text_animation("Types of attacks: \n1. sword attack \n2. ranged attack \n3. magic attack")
         choice = input("Choose how to attack: ")
 
         while choice !="1" and choice !="2" and choice !="3":
             print("\nInvalid choice...only enter 1, 2 or 3\n")
-            print("Types of attacks: \n1. sword attack \n2. ranged attack \n3. magic attack")
+            text_animation("Types of attacks: \n1. sword attack \n2. ranged attack \n3. magic attack")
             choice = input("Choose how to attack: ")
 
         if choice =="1":
@@ -374,9 +387,9 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
         if hit == True:
             genEnemy.setHealth(genEnemy.getHealth() - damage)
             if genEnemy.getHealth() < 1:
-                print("The enemies health is zero.")
+                text_animation("The enemies health is zero.")
             else:
-                print("The enemies health is now...",genEnemy.getHealth())
+                text_animation("The enemies health is now..." + str(genEnemy.getHealth()))
 
         else:
             text_animation("\nYour attack MISSED!")
@@ -394,7 +407,7 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
                 return False
 
             else:
-                print("\nYour characters remaining health is...", genCharacter.getHealth())
+                text_animation("\nYour characters remaining health is..." + str(genCharacter.getHealth()))
 
         else:
             battle = False
@@ -418,12 +431,13 @@ def decision (numOfChoices):
             choiceNumber = int(input("Write the number of your choice: "))
             print()
         except ValueError:
-            print("Invalid choice.")
-            print("Enter only: ")
+            print("Invalid choice.\n")
+            text_animation("Enter only: \n")
             printNos(numOfChoices)
             continue
         if choiceNumber > numOfChoices or choiceNumber < 1:
-            print("Invalid choice. \nEnter only: ")
+            print("Invalid choice.\n")
+            text_animation("Enter only: \n")
             printNos(numOfChoices)
         for i in range(numOfChoices):
             choiceNumber_volby = i + 1
@@ -433,9 +447,8 @@ def decision (numOfChoices):
 ######### battle generators ###########
 def levGenNormal(character, level):
     maxNumberOfEnemies = math.ceil(level*2)
-    print("Enemies are here!!")
-    text_animation("Your current stats:")
-    pprint(vars(character), sort_dicts=False)
+    text_animation("Enemies are here!!")
+    current_stats()
     for i in range(0, maxNumberOfEnemies):
         if i != 0:
             time.sleep(1)
@@ -455,9 +468,8 @@ def levGenNormal(character, level):
 
 def levGenBoss(character, level):
     numOfEnemies = math.ceil(level*2)
-    print("Enemies are here!!")
-    text_animation("Your current stats:")
-    pprint(vars(character), sort_dicts=False)
+    text_animation("Enemies are here!!")
+    current_stats()
     for i in range(0, numOfEnemies):
         if i != 0:
             time.sleep(1)
@@ -488,10 +500,29 @@ rooms_north = ["power", "entrance", "control"]
 current_code = None
 hero_suspicion = ["none", "sharla", "lux", "vega"]
 
-animation = True
-time_delay = 2.5
-time_medium = 0.5
-time_speech = 0.06
+
+time_delay = 2.5 #for places with more dramatic scene
+time_medium = 0.5 #wait after one line printed by text_animation
+time_speech = 0.06 #time between each character in speech parts
+time_slow = 2 #wait after one line printed by printWdelay
+
+def save(C_server): #TODO: before publishing delete savefiles.dat and savedserver.txt
+    text_animation("")
+    text_animation("")
+    text_animation("You reached a save point.")
+    text_animation("Would you like to  continue playing or save your progress and stop?")
+    text_animation("\n 1. Continue playing\n 2. Save and leave")
+    selection = decision(2)
+    if selection == 2:
+        with open('savefiles.dat', 'wb') as f:
+            pickle.dump([character, unfinished_servers], f, protocol=2)
+        file = open("savedserver.txt", "w")
+        file.write(C_server)
+        file.close()
+        text_animation("")
+        text_animation("See you soon!")
+        time.sleep(4)
+        exit()
 
 # function to check emptiness of the lists
 def is_list_empty(list):
@@ -499,12 +530,32 @@ def is_list_empty(list):
         return True
     return False
 
-#game end screen TODO: add a title screen
+def roll_credits():
+    text_animation("*************************")
+    text_animation("")
+    text_animation("         CREDITS         ")
+    text_animation("")
+    text_animation("Everything done by PhPetr")
+    text_animation("")
+    text_animation("  Where you can find me: ")
+    text_animation("    github.com/PhPetr")
+    text_animation("")
+    text_animation("*************************")
+    text_animation("")
+    text_animation("   Thanks for playing   ")
+    text_animation("")
+    text_animation(" I hope you enjoyed it. ")
+    text_animation("           ;)           ")
+    text_animation("")
+    time.sleep(4)
+    exit()
+
+
 def game_end(situation):
     print()
     print()
     if situation == "win":
-        print("CONGRATULATION!")
+        text_animation("CONGRATULATION!")
         text_animation("You\'ve won!!")
     elif situation == "power":
         text_animation("You\'ve lost")
@@ -517,7 +568,7 @@ def game_end(situation):
     if selection == 1:
         start()
     else:
-        exit()
+        roll_credits()
 
 def end_power():
     printWdelay("You turned off the power. The lights went off for a little bit and some dim lights lit up"
@@ -619,7 +670,7 @@ def input_code():
             printWdelay("Immediately after that, you heard an alarm and saw guards rushing in.")
             return
         else:
-            print("Invalid code. Try again...")
+            text_animation("Invalid code. Try again...\n")
             continue
 
 ############ STORY ############
@@ -773,7 +824,7 @@ def northern_first_floor():
             else:
                 last_battle()
         else:
-            print("Invalid code. Try again...")
+            text_animation("Invalid code. Try again...\n")
             continue
 
 def northern_entrance():
@@ -807,11 +858,11 @@ def decision4():
                 rooms_north.remove(user_input_direction)
                 northern_control_pt1()
         else:
-            print("Invalid choice. Enter only:")
+            text_animation("Invalid choice. Enter only:\n")
             print("\n".join(unfinished_servers))
             continue
 
-def northern_pt1(): #TODO: story of northern part
+def northern_pt1():
     global current_code
     global character
     text_animation('“That’ll be the last step in saving humanity from VISIOM. We are this close to victory!')
@@ -1140,27 +1191,31 @@ def departure():
             text_animation(' "Let’s go to the southern server." (south)')
         if "west" in unfinished_servers:
             text_animation(' "Let’s go to the western server." (west)')
-        user_input_direction = input("Input direction: ").lower()
+        user_input_direction = input("\nInput direction: ").lower()
         if user_input_direction in unfinished_servers:
             if user_input_direction == "east":
                 text_animation('"Let’s go to the eastern server."')
                 unfinished_servers.remove(user_input_direction)
+                save("east")
                 eastern_pt1()
             elif user_input_direction == "south":
                 text_animation('"Let’s go to the southern server."')
                 unfinished_servers.remove(user_input_direction)
+                save("south")
                 southern_pt1()
             elif user_input_direction == "west":
                 text_animation('"Let’s go to the western server."')
                 unfinished_servers.remove(user_input_direction)
+                save("west")
                 western_pt1()
         else:
-            print("Invalid choice. Enter only:")
+            text_animation("Invalid choice. Enter only:\n")
             print("\n".join(unfinished_servers))
             continue
         visited = is_list_empty(unfinished_servers)
     else:
         text_animation('“Let’s go to the main server.”')
+        save("north")
         northern_pt1()
 # END departure part
 
@@ -1409,8 +1464,7 @@ def intro():
 
     classData = crateClass()
     character = hero(classData[0], 100, classData[1], classData[2], classData[3], classData[4], classData[5], classData[6])
-    text_animation("Your current stats:\n")
-    pprint(vars(character), sort_dicts=False)
+    current_stats()
 
     text_animation("\nAzriel looks satisfied.")
     text_animation('“You truly are The chosen one,” he said.')
@@ -1477,33 +1531,78 @@ def intro():
     elif selection == 2:
         intro_departure()
 
+def game_resume(server):
+    global character
+    current_stats()
+    if server == "north":
+        text_animation('“Let’s go to the main server.”')
+        northern_pt1()
+    elif server == "west":
+        text_animation('"Let’s go to the western server."')
+        western_pt1()
+    elif server == "south":
+        text_animation('"Let’s go to the southern server."')
+        southern_pt1()
+    elif server == "east":
+        text_animation('"Let’s go to the eastern server."')
+        eastern_pt1()
+    else:
+        departure()
 
-def start():
+def ask_animation():
+    global developer
     global time_speech
     global time_medium
     global time_delay
-    global animation
-    global developer
-    hero_suspicion.clear()
-    unfinished_servers.clear()
-    rooms_north.clear()
-    hero_suspicion.extend(["none", "sharla", "lux", "vega"])
-    unfinished_servers.extend(["east", "south", "west"])
-    rooms_north.extend(["power", "entrance", "control"])
+    global time_slow
     if developer is True:
         text_animation("Would you like to play with animation (recommended) or without(testing)?")
         text_animation("\n 1. With animation\n 2. No animation")
         selection = decision(2)
         if selection == 2:
             time_speech = 0
-            time_medium = 0.5
+            time_medium = 0
+            time_slow = 0
             time_delay = 1
-            animation = False
+
         else:
             time_speech = 0.06
             time_medium = 0.5
+            time_slow = 2
             time_delay = 2.5
-            animation = True
+
+
+def play_from_saved():
+    global character
+    global unfinished_servers
+    file_exists = os.path.isfile("savedserver.txt")
+    if file_exists:
+        file = open("savedserver.txt", "r")
+        server = file.read()
+        file.close()
+        with open('savefiles.dat', 'rb') as f:
+            character, unfinished_servers = pickle.load(f)
+        rooms_north.clear()
+        rooms_north.extend(["power", "entrance", "control"])
+        ask_animation()
+        game_resume(server)
+
+    else:
+        text_animation("No saved points. Start playing from start.")
+        play()
+
+def play():
+    hero_suspicion.clear()
+    unfinished_servers.clear()
+    rooms_north.clear()
+    hero_suspicion.extend(["none", "sharla", "lux", "vega"])
+    unfinished_servers.extend(["east", "south", "west"])
+    rooms_north.extend(["power", "entrance", "control"])
+    ask_animation()
+    start()
+
+def start():
+    text_animation("")
     print()
     print("######################################")
     print("#                                    #")
@@ -1551,6 +1650,7 @@ def start():
         intro()
     elif selection == 3:
         text_animation("\n Maybe next time.")
+        time.sleep(4)
         exit()
 # END intro part
 
@@ -1592,16 +1692,19 @@ def menu():
     print("#        MENU        #")
     print("#                    #")
     print("######################")
-    text_animation(" 1. Play\n 2. How to play\n 3. Explain statistics\n 4. Leave")
-    selection = decision(4)
+    text_animation(" 1. Play\n 2. Play from saved point\n 3. How to play\n 4. Explain statistics\n 5. Leave")
+    selection = decision(5)
     if selection == 1:
-        start()
+        play()
     elif selection == 2:
-        how_to_play()
+        play_from_saved()
     elif selection == 3:
+        how_to_play()
+    elif selection == 4:
         explain_stats()
     else:
         text_animation("Maybe next time.")
+        time.sleep(4)
         exit()
 # END starting menu
 

@@ -6,7 +6,7 @@ import sys
 import pickle
 import os.path
 
-developer = True#TODO: remember to set it false before release
+developer = False#TODO: remember to set it false before release
 
 def text_animation(text):
     global time_speech

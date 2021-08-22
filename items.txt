@@ -1,4 +1,4 @@
-4 Leaf clover (+5),5,luck,
-gemstone pendant (+10),10,luck,
-health potion (+10),10,health,
-large health potion (+30),30,health,
+gemstone amulet - l'Amulette d'Origine Enchanteresse (+8),8,luck,
+4 Leaf clover (+3),3,luck,
+health potion - Tonique de Nature (+10),10,health,
+large health potion - Potion de Prospérité (+30),30,health,

@@ -11,7 +11,7 @@ developer = True#TODO: remember to set it false before release
 def text_animation(text):
     global time_speech
     global time_medium
-    text = "\n" + text
+    text = "\n  " + text
     for character in text:
         sys.stdout.write(character)
         sys.stdout.flush()
@@ -126,10 +126,9 @@ def crateClass():
     text_animation("'And lastly...'\n")
     heroName = input("\n What is your name hero?...")
     print()
-    text_animation("Welcome " +heroName)
+    text_animation("'Nice to meet you " + heroName + ".'")
     print()
     text_animation("'I The magic scroll shall be your narrator and help you narrow down your decisions.'\n")
-    printWdelay("After that, the weird symbols disappeared.")
     return(heroName, heroAttack, heroRanged, heroMagic, heroLuck, heroDefence, heroSkills)
 
 ##### healing for the character #####
@@ -139,7 +138,7 @@ def recovery(character, maxHP):
         character.setHealth(maxHP)
         stats = hero(character.getName(), character.getHealth(), character.getAttack(), character.getRanged(), character.getMagic(), character.getLuck(), character.getDefence(), character.getSkills())
         text_animation('"Oh no. Y-You are i-in-injured. I\'ll h-heal y-you, so d-don\'t wo-worry,"Vega said.')
-        text_animation("You have healed. Your current stats:")
+        text_animation("You have healed. Your current stats:\n")
         pprint(vars(stats), sort_dicts=False)
         time.sleep(3)
 
@@ -184,7 +183,7 @@ class enemy:
         self.name = newName
 
 ##### enemy generator #####
-def enemyGen(levelBoss, finalBoss):
+def enemyGen(levelBoss, finalBoss, difficulty):
     temp = []
     file = open("adjective.txt", "r")
     lines = file.readlines()
@@ -194,28 +193,32 @@ def enemyGen(levelBoss, finalBoss):
     lines = file.readlines()
     animal = lines[random.randint(0, len(lines) - 1)][:-1]
     file.close
+    if difficulty > 4:
+        multiplier = 2
+    else:
+        multiplier = 1
 
     if finalBoss == True:
         health = random.randint(250, 600)
-        attack = random.randint(25, 50)
-        chance = random.randint(1, 8)
+        attack = random.randint(40, 100)
         special = random.randint(100, 200)
+        chance = random.randint(1, 8)
 
         return enemy(adjective + " " + animal, health, attack, special, chance)
 
     else:
         if levelBoss == False:
-            health = random.randint(50, 100)
-            attack = random.randint(5,15)
-            special = random.randint(15, 25)
+            health = random.randint(50*multiplier, 100*multiplier)
+            attack = random.randint(10*multiplier,20*multiplier)
+            special = random.randint(15*multiplier, 35*multiplier)
             chance = random.randint(1, 10)
 
             return enemy(adjective + " " + animal, health, attack, special, chance)
 
         else:
             health = random.randint(200, 250)
-            attack = random.randint(20, 30)
-            special = random.randint(30, 50)
+            attack = random.randint(30, 60)
+            special = random.randint(50, 110)
             chance = random.randint(1, 8)
 
         return enemy(adjective + " " + animal, health, attack, special, chance)
@@ -238,7 +241,7 @@ def enemyAttack(hitChance, attackValue, name, defence, specialValue):
             hit = random.randint(0, 10)
             if hitChance >= hit:
                 text_animation("The special attack hits the hero!!!")
-                text_animation("You stagger losing..." + str(specialLoss) + "health.")
+                text_animation("You stagger losing..." + str(specialLoss) + " health.")
                 return math.ceil(specialLoss)
             else:
                 text_animation("The enemy misses")
@@ -258,7 +261,7 @@ def enemyAttack(hitChance, attackValue, name, defence, specialValue):
             hit = random.randint(0, 10)
             if hitChance >= hit:
                 text_animation("The attack hits the hero!!!")
-                text_animation("You stagger losing..." + str(loss) + "health.")
+                text_animation("You stagger losing..." + str(loss) + " health.")
                 return math.ceil(loss)
             else:
                 text_animation("The enemy misses")
@@ -284,7 +287,9 @@ def isDead(health):
 
 
 def loot(luck, genCharacter):
-    lootChance = random.randint(0, 4)
+    lootChance = random.randint(0, 5)
+    if luck <= 3:
+        luck = luck + random.randint(1, 5)
     if luck < lootChance:
         text_animation("\nNO LOOT FOR YOU!")
 
@@ -307,6 +312,7 @@ def loot(luck, genCharacter):
 
         text_animation(name)
 
+        text_animation("\n  Used skill Upgrader\n")
         if itemType == "attack":
             genCharacter.setAttack(genCharacter.getAttack() + value)
             text_animation("Your new attack is...")
@@ -337,7 +343,7 @@ def loot(luck, genCharacter):
                 print(genCharacter.getHealth())
 
     stats = hero(genCharacter.getName(), genCharacter.getHealth(), genCharacter.getAttack(), genCharacter.getRanged(), genCharacter.getMagic(), genCharacter.getLuck(), genCharacter.getDefence(), genCharacter.getSkills())
-    text_animation("Your current stats")
+    text_animation("Your current stats\n")
     pprint(vars(stats), sort_dicts=False)
     print()
     time.sleep(4)
@@ -347,29 +353,29 @@ def fightOver(enemyDead):
     if enemyDead == True:
         print()
     else:
-        text_animation("You are out of health")
+        text_animation("\nYou are out of health")
         game_end("dead")
 
 def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
     if finalBoss == True:
-        text_animation("Its a Final BOSS..." + genEnemy.getName() + "!")
+        text_animation("Its a FINAL BOSS GUARD..." + genEnemy.getName() + "!")
     elif eliteBoss == True:
         text_animation("Its an ELITE ENEMY..." + genEnemy.getName() + "!")
     else:
         text_animation("Its a..." + genEnemy.getName() + "!")
-    text_animation("\nCheck out its stats..")
+    text_animation("\nCheck out its stats...\n")
     pprint(vars(genEnemy), sort_dicts=False)
     time.sleep(4)
 
     battle = True
 
     while battle == True:
-        text_animation("Types of attacks: \n1. sword attack \n2. ranged attack \n3. magic attack")
+        text_animation("Types of attacks: \n 1. sword attack \n 2. ranged attack \n 3. magic attack\n")
         choice = input("Choose how to attack: ")
 
         while choice !="1" and choice !="2" and choice !="3":
             print("\nInvalid choice...only enter 1, 2 or 3\n")
-            text_animation("Types of attacks: \n1. sword attack \n2. ranged attack \n3. magic attack")
+            text_animation("Types of attacks: \n 1. sword attack \n 2. ranged attack \n 3. magic attack\n")
             choice = input("Choose how to attack: ")
 
         if choice =="1":
@@ -447,7 +453,7 @@ def decision (numOfChoices):
 ######### battle generators ###########
 def levGenNormal(character, level):
     maxNumberOfEnemies = math.ceil(level*2)
-    text_animation("Enemies are here!!")
+    text_animation("\nEnemies are here!!")
     current_stats()
     for i in range(0, maxNumberOfEnemies):
         if i != 0:
@@ -455,7 +461,7 @@ def levGenNormal(character, level):
         bossChance = random.randint(1,10)
         if level == 1:
             levelBoss = False
-            characterDead = battle(enemyGen(levelBoss, False), character, levelBoss, False)
+            characterDead = battle(enemyGen(levelBoss, False, level), character, levelBoss, False)
             fightOver(characterDead)
         else:
             if bossChance > 9:
@@ -463,12 +469,12 @@ def levGenNormal(character, level):
             else:
                 levelBoss = False
 
-            characterDead = battle(enemyGen(levelBoss, False),character,levelBoss, False)
+            characterDead = battle(enemyGen(levelBoss, False, level),character,levelBoss, False)
             fightOver(characterDead)
 
 def levGenBoss(character, level):
     numOfEnemies = math.ceil(level*2)
-    text_animation("Enemies are here!!")
+    text_animation("\nEnemies are here!!")
     current_stats()
     for i in range(0, numOfEnemies):
         if i != 0:
@@ -479,12 +485,12 @@ def levGenBoss(character, level):
         else:
             levelBoss = False
 
-        characterDead = battle(enemyGen(levelBoss, False),character,levelBoss, False)
+        characterDead = battle(enemyGen(levelBoss, False, level),character,levelBoss, False)
         fightOver(characterDead)
     recovery(character, 175)
 
     levelBoss = False
-    characterDead = battle(enemyGen(levelBoss, True), character,levelBoss, True)
+    characterDead = battle(enemyGen(levelBoss, True, level), character,levelBoss, True)
     fightOver(characterDead)
 
 
@@ -506,6 +512,10 @@ time_medium = 0.5 #wait after one line printed by text_animation
 time_speech = 0.06 #time between each character in speech parts
 time_slow = 2 #wait after one line printed by printWdelay
 
+def leave_game():
+    time.sleep(3)
+    exit()
+
 def save(C_server): #TODO: before publishing delete savefiles.dat and savedserver.txt
     text_animation("")
     text_animation("")
@@ -520,9 +530,10 @@ def save(C_server): #TODO: before publishing delete savefiles.dat and savedserve
         file.write(C_server)
         file.close()
         text_animation("")
+        text_animation("Saved")
+        text_animation("")
         text_animation("See you soon!")
-        time.sleep(4)
-        exit()
+        leave_game()
 
 # function to check emptiness of the lists
 def is_list_empty(list):
@@ -547,8 +558,7 @@ def roll_credits():
     text_animation(" I hope you enjoyed it. ")
     text_animation("           ;)           ")
     text_animation("")
-    time.sleep(4)
-    exit()
+    leave_game()
 
 
 def game_end(situation):
@@ -566,7 +576,7 @@ def game_end(situation):
     text_animation("\n 1. Yes, I want to play more\n 2. Maybe next time")
     selection = decision(2)
     if selection == 1:
-        start()
+        menu()
     else:
         roll_credits()
 
@@ -592,7 +602,7 @@ def ran_battle(luck):
     encounter = random.randint(0,10)
     global character
     if luck < encounter:
-        text_animation('You were walking along the path and Lux suddenly stopped and said:')
+        printWdelay('You were walking along the path and Lux suddenly stopped and said:')
         text_animation('“I can sense some enemy approaching. ' + character.getName() + ' prepare for battle.')
         text_animation('We’ll hide there,” and he pointed at a bush next to the path.')
         text_animation('“Please protect us. We don’t know how to fight,” said Azriel while he and others were hiding.')
@@ -846,6 +856,7 @@ def decision4():
             text_animation(" 'Let’s go check out the Power supply.' (power)")
         if "control" in rooms_north:
             text_animation(" 'Let’s see what’s in the Control room.' (control)")
+        text_animation("\n")
         user_input_direction = input("Input direction: ").lower()
         if user_input_direction in rooms_north:
             if user_input_direction == "entrance":
@@ -859,7 +870,7 @@ def decision4():
                 northern_control_pt1()
         else:
             text_animation("Invalid choice. Enter only:\n")
-            print("\n".join(unfinished_servers))
+            print("\n".join(rooms_north))
             continue
 
 def northern_pt1():
@@ -1194,17 +1205,17 @@ def departure():
         user_input_direction = input("\nInput direction: ").lower()
         if user_input_direction in unfinished_servers:
             if user_input_direction == "east":
-                text_animation('"Let’s go to the eastern server."')
+                text_animation('\n"Let’s go to the eastern server."\n')
                 unfinished_servers.remove(user_input_direction)
                 save("east")
                 eastern_pt1()
             elif user_input_direction == "south":
-                text_animation('"Let’s go to the southern server."')
+                text_animation('\n"Let’s go to the southern server."\n')
                 unfinished_servers.remove(user_input_direction)
                 save("south")
                 southern_pt1()
             elif user_input_direction == "west":
-                text_animation('"Let’s go to the western server."')
+                text_animation('\n"Let’s go to the western server."\n')
                 unfinished_servers.remove(user_input_direction)
                 save("west")
                 western_pt1()
@@ -1214,17 +1225,17 @@ def departure():
             continue
         visited = is_list_empty(unfinished_servers)
     else:
-        text_animation('“Let’s go to the main server.”')
+        text_animation('\n“Let’s go to the main server.”\n')
         save("north")
         northern_pt1()
 # END departure part
 
 # interview with teammates
 def talk_w_team(member):
-    while True:
-        if member == "sharla":
-            text_animation('You approached Sharla and she smiled at you and told you:\n“You can ask me anything.”')
-            text_animation('\n 1. "How do I get to the servers?"')
+    if member == "sharla":
+        text_animation('You approached Sharla and she smiled at you and told you:\n“You can ask me anything.”')
+        while True:
+            text_animation(' 1. "How do I get to the servers?"')
             text_animation(' 2. "What do you know about VISIOM?"')
             text_animation(' 3. "Why did you join AntiVisiom? "')
             if "none" in hero_suspicion:
@@ -1270,7 +1281,7 @@ def talk_w_team(member):
                     text_animation('“Why? Of course, because I don’t want to be controlled! I had escaped its control and')
                     text_animation('I want to help other people to be freed from VISOMs control!” she said.\n')
                 elif selection == 4:
-                    text_animation(' 4. "How did you join AntiVisiom?"')
+                    text_animation('"How did you join AntiVisiom?"')
                     text_animation('“How?? Well... I don’t remember it clearly... I was under its control but... my chip...')
                     text_animation(' my chip broke!! I hit my head and it broke and I realized I was being controlled.')
                     text_animation('Then Azriel found me and that’s how I joined AntiVisiom.” she said and giggled quite nervously.\n')
@@ -1281,10 +1292,11 @@ def talk_w_team(member):
                     text_animation('"That\'s all, thanks."\n')
                     asking_the_team()
 
-        elif member == "lux":
-            text_animation('You went to talk with Lux. “I have few questions I wanna ask you.”')
-            text_animation('He nods his head with crossed hands.')
-            text_animation('\n 1. "Can you explain what’s your sixth sense?"')
+    elif member == "lux":
+        text_animation('You went to talk with Lux. \n“I have few questions I wanna ask you.”')
+        text_animation('He nods his head with crossed hands.')
+        while True:
+            text_animation(' 1. "Can you explain what’s your sixth sense?"')
             text_animation(' 2. "What do you know about VISIOM?"')
             text_animation(' 3. "Why did you join AntiVisiom? "')
             if "none" in hero_suspicion:
@@ -1318,7 +1330,7 @@ def talk_w_team(member):
                     text_animation('"Why did you join AntiVisiom? "')
                     text_animation('“Because I don’t like VISIOM. That’s all,” he said.\n')
                 elif selection == 4:
-                    text_animation(' 4. "How did you join AntiVisiom?"')
+                    text_animation('"How did you join AntiVisiom?"')
                     text_animation('He looked at you with an irritated face and said: “Why should I tell YOU??? Are YOU')
                     text_animation('a police officer or what?? You DON’T NEED to know that.”\n')
                     if "lux" in hero_suspicion:
@@ -1327,9 +1339,10 @@ def talk_w_team(member):
                     text_animation('"That\'s all, thanks."\n')
                     asking_the_team()
 
-        else:
-            text_animation('You came to Vega and she asked nervously: “Wh-What d-d-do you want to know?”')
-            text_animation('\n 1. "Can you heal me properly if I am injured? You look nervous."')
+    elif member == "vega":
+        text_animation('You came to Vega and she asked nervously: \n“Wh-What d-d-do you want to know?”')
+        while True:
+            text_animation(' 1. "Can you heal me properly if I am injured? You look nervous."')
             text_animation(' 2. "What do you know about VISIOM?"')
             text_animation(' 3. "Why did you join AntiVisiom? "')
             if "none" in hero_suspicion:
@@ -1366,7 +1379,7 @@ def talk_w_team(member):
                     text_animation('“I-I just w-want to help people. I-I- became a nurse because I wanted to help people,”')
                     text_animation('she said determinedly.\n')
                 elif selection == 4:
-                    text_animation(' 4. "How did you join AntiVisiom?"')
+                    text_animation('"How did you join AntiVisiom?"')
                     text_animation('“I-I-I don’t k-know. B-but Azriel told me t-that h-he helped me to escape VISIOM.')
                     text_animation('My chip was somehow damaged so that’s why,” she said.\n')
                     if "vega" in hero_suspicion:
@@ -1376,69 +1389,36 @@ def talk_w_team(member):
                     text_animation('"That\'s all, thanks."\n')
                     asking_the_team()
 
+def who_ask():
+    text_animation("Who do you want to talk to?")
+    text_animation("\n 1. Talk to Sharla\n 2. Talk to Lux\n 3. Talk to Vega\n 4. That\'s all. Let\'s set off.")
+    selection = decision(4)
+    if selection == 1:
+        member = "sharla"
+        talk_w_team(member)
+    elif selection == 2:
+        member = "lux"
+        talk_w_team(member)
+    elif selection == 3:
+        member = "vega"
+        talk_w_team(member)
+    else:
+        intro_departure()
 
 def asking_the_team():
     if "sharla" in hero_suspicion:
-        text_animation("Who do you want to talk to?")
-        text_animation("\n 1. Talk to Sharla\n 2. Talk to Lux\n 3. Talk to Vega\n 4. That\'s all. Let\'s set off.")
-        selection = decision(4)
-        if selection == 1:
-            text_animation("talk to Sharla")
-            member = "sharla"
-            talk_w_team(member)
-        elif selection == 2:
-            text_animation("talk to Lux")
-            member = "lux"
-            talk_w_team(member)
-        elif selection == 3:
-            text_animation("talk to Vega")
-            member = "vega"
-            talk_w_team(member)
-        else:
-            intro_departure()
+        who_ask()
 
     elif "lux" in hero_suspicion:
-        text_animation("Who do you want to talk to?")
-        text_animation("\n 1. Talk to Sharla\n 2. Talk to Lux\n 3. Talk to Vega\n 4. That\'s all. Let\'s set off.")
-        selection = decision(4)
-        if selection == 1:
-            text_animation("talk to Sharla")
-            member = "sharla"
-            talk_w_team(member)
-        elif selection == 2:
-            text_animation("talk to Lux")
-            member = "lux"
-            talk_w_team(member)
-        elif selection == 3:
-            text_animation("talk to Vega")
-            member = "vega"
-            talk_w_team(member)
-        else:
-            intro_departure()
+        who_ask()
 
     elif "vega" in hero_suspicion:
-        text_animation("Who do you want to talk to?")
-        text_animation("\n 1. Talk to Sharla\n 2. Talk to Lux\n 3. Talk to Vega\n 4. That\'s all. Let\'s set off.")
-        selection = decision(4)
-        if selection == 1:
-            text_animation("talk to Sharla")
-            member = "sharla"
-            talk_w_team(member)
-        elif selection == 2:
-            text_animation("talk to Lux")
-            member = "lux"
-            talk_w_team(member)
-        elif selection == 3:
-            text_animation("talk to Vega")
-            member = "vega"
-            talk_w_team(member)
-        else:
-            intro_departure()
+        who_ask()
 
     else:
         suspicion_level = is_list_empty(hero_suspicion)
         if suspicion_level is True:
-            text_animation("'Their answers were strange.Sharlas and Vegas answer about how they joined AntiVisiom were connected with Azriel.'")
+            text_animation("'Their answers were strange. Sharlas and Vegas answer about how they joined AntiVisiom were connected with Azriel.'")
             text_animation("What will you do?")
             text_animation("\n 1. Will you still trust AntiVisiom and help them?\n 2. Will you not trust Azriel and his teammates and think of something else to do?")
             selection = decision(2)
@@ -1466,7 +1446,8 @@ def intro():
     character = hero(classData[0], 100, classData[1], classData[2], classData[3], classData[4], classData[5], classData[6])
     current_stats()
 
-    text_animation("\nAzriel looks satisfied.")
+    printWdelay("After that, the weird symbols disappeared.")
+    printWdelay("\nAzriel looks satisfied.")
     text_animation('“You truly are The chosen one,” he said.')
     text_animation('“I feel stronger than I have ever been. And I can even use magic attacks.”')
     text_animation('“That’s great! We have prepared some equipment for you. We can’t give you')
@@ -1487,8 +1468,8 @@ def intro():
     text_animation('“Yes, I can. I just need to concentrate and shoot from my hands.')
     text_animation('Thanks for the equipment but now to the important stuff. How can I defeat VISIOM?”')
     text_animation("“Right, first of all, as you know VISOM is a program. So you can’t defeat it directly.”")
-    printWdelay("You looked at Azriel with a confused look. He understands what you’re going to say")
-    text_animation("and answers it before you can ask.")
+    printWdelay("You looked at Azriel with a confused look. He understands what you’re going to say"
+                "\nand answers it before you can ask.")
     text_animation("“You can’t defeat VISIOM DIRECTLY. You have to destroy its servers where VISIOM is hosted.")
     text_animation("There are in total 4 servers. Three of those are supporting servers and the last one")
     text_animation("is the main server. So you need to destroy them all.”")
@@ -1535,16 +1516,16 @@ def game_resume(server):
     global character
     current_stats()
     if server == "north":
-        text_animation('“Let’s go to the main server.”')
+        text_animation('“Let’s go to the main server.”\n')
         northern_pt1()
     elif server == "west":
-        text_animation('"Let’s go to the western server."')
+        text_animation('"Let’s go to the western server."\n')
         western_pt1()
     elif server == "south":
-        text_animation('"Let’s go to the southern server."')
+        text_animation('"Let’s go to the southern server."\n')
         southern_pt1()
     elif server == "east":
-        text_animation('"Let’s go to the eastern server."')
+        text_animation('"Let’s go to the eastern server."\n')
         eastern_pt1()
     else:
         departure()
@@ -1585,6 +1566,7 @@ def play_from_saved():
         rooms_north.clear()
         rooms_north.extend(["power", "entrance", "control"])
         ask_animation()
+        text_animation("Loading last saved point.\n")
         game_resume(server)
 
     else:
@@ -1644,14 +1626,14 @@ def start():
         intro()
     elif selection == 2:
         hero_suspicion.remove("none")
-        text_animation("‘They seem a little suspicious but why not help them?")
-        text_animation("I still should be wary about what they are doing.’")
         text_animation('"...yes"')
+        text_animation("\n‘They seem a little suspicious but why not help them?")
+        text_animation("I still should be wary about what they are doing.’")
         intro()
     elif selection == 3:
+        text_animation('"No')
         text_animation("\n Maybe next time.")
-        time.sleep(4)
-        exit()
+        leave_game()
 # END intro part
 
 # starting menu
@@ -1692,7 +1674,7 @@ def menu():
     print("#        MENU        #")
     print("#                    #")
     print("######################")
-    text_animation(" 1. Play\n 2. Play from saved point\n 3. How to play\n 4. Explain statistics\n 5. Leave")
+    text_animation("\n 1. Play\n 2. Play from saved point\n 3. How to play\n 4. Explain statistics\n 5. Leave")
     selection = decision(5)
     if selection == 1:
         play()
@@ -1704,8 +1686,7 @@ def menu():
         explain_stats()
     else:
         text_animation("Maybe next time.")
-        time.sleep(4)
-        exit()
+        leave_game()
 # END starting menu
 
 text_animation("WELCOME PLAYER")

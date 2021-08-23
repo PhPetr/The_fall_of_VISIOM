@@ -19,10 +19,10 @@ def text_animation(text):
     time.sleep(time_medium)
 
 def printWdelay(text):
-    global time_medium
+    global time_slow
     text = "\n\n" + text + "\n"
     print(text)
-    time.sleep(time_medium)
+    time.sleep(time_slow)
 
 ######## Character #########
 class hero:
@@ -74,7 +74,7 @@ class hero:
 
 def crateClass():
     print()
-    text_animation("‘Oh hello, The chosen one. You want powers, but first I The magic scroll\nwant to ask a few questions to know you and know which power I’ll give you...’\n")
+    text_animation("‘Oh hello, The chosen one. I know you want powers, but first I The magic scroll\nwant to ask a few questions to know you and know which power I’ll give you...’\n")
     print()
     role = input(" Are you more strategic (1) or more of a warrior (2)?...")
     print()
@@ -114,11 +114,11 @@ def crateClass():
     print()
     time.sleep(0.2)
     heroLuck = random.randint(2,10)
-    text_animation("'Your hero has " + str(heroLuck) + " luck out of 10.'")
+    text_animation("'You have " + str(heroLuck) + " luck out of 10.'")
     print()
 
     text_animation("New skill: Jack of all trades")
-    text_animation("'With this skill you can use martial arts, swords, bows and magic staff.'")
+    text_animation("'With this skill you can use martial arts, swords, bows and magic staffs.'")
     text_animation("\nNew skill: Upgrader")
     text_animation("'Every obtained loot will add points for specific statistics based on its quality'")
     heroSkills = "Jack of all trades, Upgrader"
@@ -271,10 +271,10 @@ def enemyAttack(hitChance, attackValue, name, defence, specialValue):
 def hitChance(luck):
     hit = random.randint(0, 10)
     if luck < hit:
-        time.sleep(time_delay)
+        time.sleep(2)
         return False
     else:
-        time.sleep(time_delay)
+        time.sleep(2)
         text_animation("\nYou HIT the enemy!")
         return True
 
@@ -357,6 +357,8 @@ def fightOver(enemyDead):
         game_end("dead")
 
 def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
+    global time_speech
+    time_speech = 0.04
     if finalBoss == True:
         text_animation("Its a FINAL BOSS GUARD..." + genEnemy.getName() + "!")
     elif eliteBoss == True:
@@ -410,6 +412,7 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
 
             if characterDead == True:
                 battle = False
+                time_speech = 0.08
                 return False
 
             else:
@@ -420,7 +423,7 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
             text_animation("\nYou have defeated the enemy!!")
             text_animation("Did it drop any loot?")
             loot(genCharacter.getLuck(), genCharacter)
-
+            time_speech = 0.08
             return True
 ############ End battle part of the game ##############
 
@@ -509,8 +512,8 @@ hero_suspicion = ["none", "sharla", "lux", "vega"]
 
 time_delay = 2.5 #for places with more dramatic scene
 time_medium = 0.5 #wait after one line printed by text_animation
-time_speech = 0.06 #time between each character in speech parts
-time_slow = 2 #wait after one line printed by printWdelay
+time_speech = 0.08 #time between each character in speech parts
+time_slow = 3 #wait after one line printed by printWdelay
 
 def leave_game():
     time.sleep(3)
@@ -1235,9 +1238,10 @@ def talk_w_team(member):
     if member == "sharla":
         text_animation('You approached Sharla and she smiled at you and told you:\n“You can ask me anything.”')
         while True:
+            text_animation("")
             text_animation(' 1. "How do I get to the servers?"')
             text_animation(' 2. "What do you know about VISIOM?"')
-            text_animation(' 3. "Why did you join AntiVisiom? "')
+            text_animation(' 3. "Why did you join AntiVISIOM?"')
             if "none" in hero_suspicion:
                 text_animation(' 4. "That\'s all, thanks."')
                 selection = decision(4)
@@ -1254,7 +1258,7 @@ def talk_w_team(member):
                     text_animation('I think we can destroy it because it will not anticipate that someone without the chip exists.')
                     text_animation('You are our hope!” she said.\n')
                 elif selection == 3:
-                    text_animation('"Why did you join AntiVisiom? "')
+                    text_animation('"Why did you join AntiVISIOM?"')
                     text_animation('“Why? Of course, because I don’t want to be controlled! I had escaped its control and')
                     text_animation('I want to help other people to be freed from VISOMs control!” she said.\n')
                 else:
@@ -1277,7 +1281,7 @@ def talk_w_team(member):
                     text_animation('I think we can destroy it because it will not anticipate that someone without the chip exists.')
                     text_animation('You are our hope!” she said.\n')
                 elif selection == 3:
-                    text_animation('"Why did you join AntiVisiom? "')
+                    text_animation('"Why did you join AntiVISIOM?"')
                     text_animation('“Why? Of course, because I don’t want to be controlled! I had escaped its control and')
                     text_animation('I want to help other people to be freed from VISOMs control!” she said.\n')
                 elif selection == 4:
@@ -1296,9 +1300,10 @@ def talk_w_team(member):
         text_animation('You went to talk with Lux. \n“I have few questions I wanna ask you.”')
         text_animation('He nods his head with crossed hands.')
         while True:
+            text_animation("")
             text_animation(' 1. "Can you explain what’s your sixth sense?"')
             text_animation(' 2. "What do you know about VISIOM?"')
-            text_animation(' 3. "Why did you join AntiVisiom? "')
+            text_animation(' 3. "Why did you join AntiVISIOM?"')
             if "none" in hero_suspicion:
                 text_animation(' 4. "That\'s all, thanks."')
                 selection = decision(4)
@@ -1310,7 +1315,7 @@ def talk_w_team(member):
                     text_animation('"What do you know about VISIOM?"')
                     text_animation('“I know what Azriel told me and you and that’s all I need,” he said in a cranky manner.\n')
                 elif selection == 3:
-                    text_animation('"Why did you join AntiVisiom? "')
+                    text_animation('"Why did you join AntiVISIOM?"')
                     text_animation('“Because I don’t like VISIOM. That’s all,” he said.\n')
                 else:
                     text_animation('"That\'s all, thanks."')
@@ -1327,7 +1332,7 @@ def talk_w_team(member):
                     text_animation('"What do you know about VISIOM?"')
                     text_animation('“I know what Azriel told me and you and that’s all I need,” he said in a cranky manner.\n')
                 elif selection == 3:
-                    text_animation('"Why did you join AntiVisiom? "')
+                    text_animation('"Why did you join AntiVISIOM?"')
                     text_animation('“Because I don’t like VISIOM. That’s all,” he said.\n')
                 elif selection == 4:
                     text_animation('"How did you join AntiVisiom?"')
@@ -1342,9 +1347,10 @@ def talk_w_team(member):
     elif member == "vega":
         text_animation('You came to Vega and she asked nervously: \n“Wh-What d-d-do you want to know?”')
         while True:
+            text_animation("")
             text_animation(' 1. "Can you heal me properly if I am injured? You look nervous."')
             text_animation(' 2. "What do you know about VISIOM?"')
-            text_animation(' 3. "Why did you join AntiVisiom? "')
+            text_animation(' 3. "Why did you join AntiVISIOM?"')
             if "none" in hero_suspicion:
                 text_animation(' 4. "That\'s all, thanks."')
                 selection = decision(4)
@@ -1357,7 +1363,7 @@ def talk_w_team(member):
                     text_animation('“J-ju-just that it c-controls everyone. VISIOM controls them with absolute power,”')
                     text_animation('she said but the last sentence didn’t sound quite natural.\n')
                 elif selection == 3:
-                    text_animation('"Why did you join AntiVisiom? "')
+                    text_animation('"Why did you join AntiVISIOM?"')
                     text_animation('“I-I just w-want to help people. I-I- became a nurse because I wanted to help people,” she said determinedly.\n')
                 else:
                     text_animation('"That\'s all, thanks."')
@@ -1375,7 +1381,7 @@ def talk_w_team(member):
                     text_animation('“J-ju-just that it c-controls everyone. VISIOM controls them with absolute power,”')
                     text_animation('she said but the last sentence didn’t sound quite natural.\n')
                 elif selection == 3:
-                    text_animation('"Why did you join AntiVisiom? "')
+                    text_animation('"Why did you join AntiVISIOM?"')
                     text_animation('“I-I just w-want to help people. I-I- became a nurse because I wanted to help people,”')
                     text_animation('she said determinedly.\n')
                 elif selection == 4:
@@ -1384,7 +1390,7 @@ def talk_w_team(member):
                     text_animation('My chip was somehow damaged so that’s why,” she said.\n')
                     if "vega" in hero_suspicion:
                         hero_suspicion.remove("vega")
-                    text_animation("‘Why did she stop stuttering in the middle of the sentence?’")
+                    text_animation("‘Why did she stop stuttering in the middle of the sentence? Quite strange...’")
                 else:
                     text_animation('"That\'s all, thanks."\n')
                     asking_the_team()
@@ -1547,9 +1553,9 @@ def ask_animation():
             time_delay = 1
 
         else:
-            time_speech = 0.06
+            time_speech = 0.08
             time_medium = 0.5
-            time_slow = 2
+            time_slow = 3
             time_delay = 2.5
 
 
@@ -1631,7 +1637,7 @@ def start():
         text_animation("I still should be wary about what they are doing.’")
         intro()
     elif selection == 3:
-        text_animation('"No')
+        text_animation('"No"')
         text_animation("\n Maybe next time.")
         leave_game()
 # END intro part

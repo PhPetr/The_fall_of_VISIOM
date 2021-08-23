@@ -119,7 +119,8 @@ def crateClass():
 
     text_animation("New skill: Jack of all trades")
     text_animation("'With this skill you can use martial arts, swords, bows and magic staffs.'")
-    text_animation("\nNew skill: Upgrader")
+    text_animation("")
+    text_animation("New skill: Upgrader")
     text_animation("'Every obtained loot will add points for specific statistics based on its quality'")
     heroSkills = "Jack of all trades, Upgrader"
 
@@ -271,10 +272,10 @@ def enemyAttack(hitChance, attackValue, name, defence, specialValue):
 def hitChance(luck):
     hit = random.randint(0, 10)
     if luck < hit:
-        time.sleep(2)
+        time.sleep(1)
         return False
     else:
-        time.sleep(2)
+        time.sleep(1)
         text_animation("\nYou HIT the enemy!")
         return True
 
@@ -358,7 +359,7 @@ def fightOver(enemyDead):
 
 def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
     global time_speech
-    time_speech = 0.04
+    time_speech = 0.03
     if finalBoss == True:
         text_animation("Its a FINAL BOSS GUARD..." + genEnemy.getName() + "!")
     elif eliteBoss == True:
@@ -377,6 +378,7 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
 
         while choice !="1" and choice !="2" and choice !="3":
             print("\nInvalid choice...only enter 1, 2 or 3\n")
+            text_animation("")
             text_animation("Types of attacks: \n 1. sword attack \n 2. ranged attack \n 3. magic attack\n")
             choice = input("Choose how to attack: ")
 
@@ -412,7 +414,7 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
 
             if characterDead == True:
                 battle = False
-                time_speech = 0.08
+                time_speech = 0.06
                 return False
 
             else:
@@ -423,7 +425,7 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
             text_animation("\nYou have defeated the enemy!!")
             text_animation("Did it drop any loot?")
             loot(genCharacter.getLuck(), genCharacter)
-            time_speech = 0.08
+            time_speech = 0.06
             return True
 ############ End battle part of the game ##############
 
@@ -512,7 +514,7 @@ hero_suspicion = ["none", "sharla", "lux", "vega"]
 
 time_delay = 2.5 #for places with more dramatic scene
 time_medium = 0.5 #wait after one line printed by text_animation
-time_speech = 0.08 #time between each character in speech parts
+time_speech = 0.06 #time between each character in speech parts
 time_slow = 3 #wait after one line printed by printWdelay
 
 def leave_game():
@@ -1199,6 +1201,7 @@ def intro_departure():
 def departure():
     visited = is_list_empty(unfinished_servers)
     while visited is False:
+        text_animation("")
         if "east" in unfinished_servers:
             text_animation(' "Let’s go to the eastern server." (east)')
         if "south" in unfinished_servers:
@@ -1228,6 +1231,7 @@ def departure():
             continue
         visited = is_list_empty(unfinished_servers)
     else:
+        text_animation("")
         text_animation('\n“Let’s go to the main server.”\n')
         save("north")
         northern_pt1()
@@ -1553,7 +1557,7 @@ def ask_animation():
             time_delay = 1
 
         else:
-            time_speech = 0.08
+            time_speech = 0.06
             time_medium = 0.5
             time_slow = 3
             time_delay = 2.5

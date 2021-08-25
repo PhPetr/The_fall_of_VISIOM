@@ -6,7 +6,7 @@ import sys
 import pickle
 import os.path
 
-developer = False#TODO: remember to set it false before release
+developer = True#TODO: remember to set it false before release
 
 def text_animation(text):
     global time_speech
@@ -84,7 +84,7 @@ def crateClass():
 
     if role == "1":
         heroAttack = 5
-        heroDefence = random.randint(5,10)
+        heroDefence = 10
 
     else:
         heroAttack = 10
@@ -212,7 +212,7 @@ def enemyGen(levelBoss, finalBoss, difficulty):
             health = random.randint(50*multiplier, 100*multiplier)
             attack = random.randint(10*multiplier,20*multiplier)
             special = random.randint(15*multiplier, 35*multiplier)
-            chance = random.randint(1, 10)
+            chance = random.randint(1, 8)
 
             return enemy(adjective + " " + animal, health, attack, special, chance)
 
@@ -220,7 +220,7 @@ def enemyGen(levelBoss, finalBoss, difficulty):
             health = random.randint(200, 250)
             attack = random.randint(30, 60)
             special = random.randint(50, 110)
-            chance = random.randint(2, 10)
+            chance = random.randint(1, 9)
 
         return enemy(adjective + " " + animal, health, attack, special, chance)
 
@@ -296,7 +296,7 @@ def loot(luck, genCharacter):
 
     else:
         tableNum = random.randint(0, 4)
-        lootTableList = ["items", "ranged", "defence", "magic", "attack"]
+        lootTableList = ["defence", "ranged", "items", "magic", "attack"]
         itemType = lootTableList[tableNum]
         file = open(itemType + ".txt", "r")
         lines = file.readlines()
@@ -354,7 +354,8 @@ def fightOver(enemyDead):
     if enemyDead == True:
         print()
     else:
-        text_animation("\nYou are out of health")
+        text_animation("\nYou are out of health.")
+        text_animation("You cannot continue in your adventure anymore.")
         game_end("dead")
 
 def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
@@ -526,6 +527,8 @@ def leave_game():
     exit()
 
 def save(C_server): #TODO: before publishing delete savefiles.dat and savedserver.txt
+    global character
+    global unfinished_servers
     text_animation("")
     text_animation("")
     text_animation("You reached a save point.")
@@ -616,7 +619,13 @@ def ran_battle(luck):
         text_animation('We’ll hide there,” and he pointed at a bush next to the path.')
         text_animation('“Please protect us. We don’t know how to fight,” said Azriel while he and others were hiding.')
         levGenNormal(character,1)
-        recovery(character,100)
+        num_unfinished_servers = len(unfinished_servers)
+        if num_unfinished_servers == 2:
+            recovery(character, 100)
+        elif num_unfinished_servers == 1:
+            recovery(character, 125)
+        elif num_unfinished_servers == 0:
+            recovery(character, 150)
 
 # random guards decider
 def ran_guards(luck):
@@ -967,7 +976,7 @@ def betray_pt2():
     text_animation('“INTRUDERS INTRUDERS INTRUDERS! THEY ARE TRYING TO DESTROY THE SERVER!”')
     text_animation('Azriel looked at you resentfully and said: “You… YOU DAMM TRAITOR!!!”')
     printWdelay("Everyone tries to get inside the teleportation circle to run away but you hold them back. ")
-    text_animation('Lux stopped struggling and said: “It’s no use. The guards are here.”')
+    text_animation('Lux stopped struggling and said: “It’s no use. The guards are here!”')
     printWdelay("Several people and bots barged into the room. They were probably the guards.")
     text_animation('“Here. They are the intruders.”')
     text_animation('They helped you arrest them. Azriel and Sharla were resisting, Lux already gave up and')
@@ -1083,7 +1092,7 @@ def eastern_pt1():
     text_animation('because everyone uses the teleport points. But no one knows what might happen.”')
     text_animation('“Yes,” Lux agrees with Sharla.')
     ran_battle(character.getLuck())
-    text_animation('You reached the end of the path and saw a futuristic rectangle building.')
+    printWdelay('You reached the end of the path and saw a futuristic rectangle building.')
     code_intel("east")
     eastern_pt2()
 # END eastern server part
@@ -1348,6 +1357,7 @@ def talk_w_team(member):
                     text_animation('"How did you join AntiVisiom?"')
                     text_animation('He looked at you with an irritated face and said: “Why should I tell YOU??? Are YOU')
                     text_animation('a police officer or what?? You DON’T NEED to know that.”\n')
+                    text_animation("'Strange...")
                     if "lux" in hero_suspicion:
                         hero_suspicion.remove("lux")
                 else:
@@ -1493,6 +1503,8 @@ def intro():
 
     selection = decision(2)
     if selection == 1:
+        text_animation('"Why can\'t I destroy only the main server?"')
+        text_animation("")
         text_animation('“Because VISIOM can restore itself from any of its supporting servers.')
         text_animation('You need to get rid of VISOM completely.”')
 
@@ -1600,6 +1612,7 @@ def play():
     start()
 
 def start():
+    global time_delay
     text_animation("")
     print()
     print("######################################")
@@ -1609,6 +1622,7 @@ def start():
     print("######################################")
     print()
     print()
+    time.sleep(1)
 
     text_animation(". . .")
     text_animation("‘Where am I...’")
@@ -1648,12 +1662,17 @@ def start():
         intro()
     elif selection == 3:
         text_animation('"No"')
+        text_animation("")
         text_animation("\n Maybe next time.")
-        leave_game()
+        roll_credits()
 # END intro part
 
 # starting menu
 def how_to_play():
+    global developer
+    global time_speech
+    if developer is False:
+        time_speech = 0.03
     text_animation("You play by entering numbers or words.\n")
     text_animation("When there’s something similar to this:\n 1. Choice 1\n 2. Choice 2\n 3. Choice 3")
     text_animation("Enter the number of the choice you want.\n")
@@ -1663,9 +1682,15 @@ def how_to_play():
     text_animation("When there’s something similar to this:\n Go forward (forward)\n Go left (left)\n Go right (right)")
     text_animation("Enter the word in brackets of the choice you want.\n")
     move = input("Press any key to back to the menu.")
+    if developer is False:
+        time_speech = 0.06
     menu()
 
 def explain_stats():
+    global developer
+    global time_speech
+    if developer is False:
+        time_speech = 0.03
     text_animation("There are two types of statistics: yours and enemies statistics.\n")
     text_animation("Your statistics are health, attack, range, magic, luck and defence.")
     text_animation(" Health – your current health")
@@ -1681,6 +1706,8 @@ def explain_stats():
     text_animation(" Special – damage dealt by enemies special attack")
     text_animation(" Chance – enemies chance determine if their attack lands on you\n")
     move = input("Press any key to back to the menu.")
+    if developer is False:
+        time_speech = 0.06
     menu()
 
 def menu():

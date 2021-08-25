@@ -203,7 +203,7 @@ def enemyGen(levelBoss, finalBoss, difficulty):
         health = random.randint(250, 600)
         attack = random.randint(40, 100)
         special = random.randint(100, 200)
-        chance = random.randint(1, 8)
+        chance = random.randint(3, 10)
 
         return enemy(adjective + " " + animal, health, attack, special, chance)
 
@@ -220,7 +220,7 @@ def enemyGen(levelBoss, finalBoss, difficulty):
             health = random.randint(200, 250)
             attack = random.randint(30, 60)
             special = random.randint(50, 110)
-            chance = random.randint(1, 8)
+            chance = random.randint(2, 10)
 
         return enemy(adjective + " " + animal, health, attack, special, chance)
 
@@ -228,7 +228,7 @@ def enemyGen(levelBoss, finalBoss, difficulty):
 def enemyAttack(hitChance, attackValue, name, defence, specialValue):
 
     specialAtk = random.randint(1,10)
-    if specialAtk > 8:
+    if specialAtk > 7:
         specialLoss = specialValue - defence
 
         if specialLoss <= 0:
@@ -316,31 +316,31 @@ def loot(luck, genCharacter):
         text_animation("\n  Used skill Upgrader\n")
         if itemType == "attack":
             genCharacter.setAttack(genCharacter.getAttack() + value)
-            text_animation("Your new attack is...")
+            text_animation("Your new ATTACK is...")
             print(genCharacter.getAttack())
 
         elif itemType == "ranged":
             genCharacter.setRanged(genCharacter.getRanged() + value)
-            text_animation("Your new ranged attack is...")
+            text_animation("Your new RANGED attack is...")
             print(genCharacter.getRanged())
 
         elif itemType == "defence":
             genCharacter.setDefence(genCharacter.getDefence() + value)
-            text_animation("Your new defence is...")
+            text_animation("Your new DEFENCE is...")
             print(genCharacter.getDefence())
 
         elif itemType == "magic":
             genCharacter.setMagic(genCharacter.getMagic() + value)
-            text_animation("Your new magic is...")
+            text_animation("Your new MAGIC is...")
             print(genCharacter.getMagic())
         else:
             if splitItemLine[2] == "luck":
                 genCharacter.setLuck(genCharacter.getLuck() + value)
-                text_animation("Your new luck is...")
+                text_animation("Your new LUCK is...")
                 print(genCharacter.getLuck())
             elif splitItemLine[2] == "health":
                 genCharacter.setHealth(genCharacter.getHealth() + value)
-                text_animation("Your new health is...")
+                text_animation("Your new HEALTH is...")
                 print(genCharacter.getHealth())
 
     stats = hero(genCharacter.getName(), genCharacter.getHealth(), genCharacter.getAttack(), genCharacter.getRanged(), genCharacter.getMagic(), genCharacter.getLuck(), genCharacter.getDefence(), genCharacter.getSkills())
@@ -359,7 +359,9 @@ def fightOver(enemyDead):
 
 def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
     global time_speech
-    time_speech = 0.03
+    global developer
+    if developer is False:
+        time_speech = 0.03
     if finalBoss == True:
         text_animation("Its a FINAL BOSS GUARD..." + genEnemy.getName() + "!")
     elif eliteBoss == True:
@@ -414,7 +416,8 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
 
             if characterDead == True:
                 battle = False
-                time_speech = 0.06
+                if developer is False:
+                    time_speech = 0.06
                 return False
 
             else:
@@ -425,7 +428,8 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
             text_animation("\nYou have defeated the enemy!!")
             text_animation("Did it drop any loot?")
             loot(genCharacter.getLuck(), genCharacter)
-            time_speech = 0.06
+            if developer is False:
+                time_speech = 0.06
             return True
 ############ End battle part of the game ##############
 
@@ -659,11 +663,13 @@ def code_intel(place):
     global character
     if place == "east":
         current_code = hack_codes[0]
+        text_animation('“That’s the eastern server,” Azriel said and pointed at the building. “Listen '+ character.getName() +',')
     elif place == "south":
         current_code = hack_codes[1]
+        text_animation('“That’s the southern server,” Azriel said and pointed at the building. “Listen '+ character.getName() +',')
     elif place == "west":
         current_code = hack_codes[2]
-    text_animation('“That’s the eastern server,” Azriel said and pointed at the building. “Listen '+ character.getName() +',')
+        text_animation('“That’s the western server,” Azriel said and pointed at the building. “Listen '+ character.getName() +',')
     text_animation('there are server racks in the building. You need to find one with a monitor. ')
     text_animation('That’s the control panel. Then insert the device into the control panel and')
     text_animation('enter the code: ' + str(current_code) + ' into the text field.')

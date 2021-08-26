@@ -73,6 +73,7 @@ class hero:
 # class creation
 
 def crateClass():
+    global character
     print()
     text_animation("‘Oh hello, The chosen one. I know you want powers, but first I The magic scroll\nwant to ask a few questions to know you and know which power I’ll give you...’\n")
     print()
@@ -129,8 +130,61 @@ def crateClass():
     print()
     text_animation("'Nice to meet you " + heroName + ".'")
     print()
-    text_animation("'I The magic scroll shall be your narrator and help you narrow down your decisions.'\n")
     return(heroName, heroAttack, heroRanged, heroMagic, heroLuck, heroDefence, heroSkills)
+extrapoints = 3
+
+def adding_points():
+    global extrapoints
+    print()
+    text_animation("'I'll give you " + str(extrapoints) + " extra points.'")
+    text_animation("'You can choose where to add those points.'")
+    available_stats = ["attack", "ranged", "magic", "luck", "defence"]
+    while extrapoints > 0:
+        text_animation("'Where you want to add the points?'")
+        chosenstat = input("Choose between attack, ranged, magic, luck and defence:").lower()
+
+        if chosenstat in available_stats:
+            points = how_many_points()
+            if chosenstat == "attack":
+                character.setAttack(character.getAttack() + points)
+                current_stats()
+                extrapoints = extrapoints - points
+            elif chosenstat == "ranged":
+                character.setRanged(character.getRanged() + points)
+                current_stats()
+                extrapoints = extrapoints - points
+            elif chosenstat == "magic":
+                character.setMagic(character.getMagic() + points)
+                current_stats()
+                extrapoints = extrapoints - points
+            elif chosenstat == "luck":
+                character.setLuck(character.getLuck() + points)
+                current_stats()
+                extrapoints = extrapoints - points
+            elif chosenstat == "defence":
+                character.setDefence(character.getDefence() + points)
+                current_stats()
+                extrapoints = extrapoints - points
+            text_animation("'You have " + str(extrapoints) + " extra points left.")
+        else:
+            text_animation("Invalid choice. Enter only:\n")
+            print("\n".join(available_stats))
+            continue
+
+    text_animation("'I The magic scroll shall be your narrator and help you narrow down your decisions.'\n")
+
+def how_many_points():
+    global extrapoints
+    while True:
+        print()
+        how_many_points = int(input("How many points do you want to add: "))
+        if how_many_points <= extrapoints:
+            points = how_many_points
+            return points
+        else:
+            print("Invalid choice")
+            text_animation("Max points you can add " + str(extrapoints) + ".")
+            continue
 
 ##### healing for the character #####
 def recovery(character, maxHP):
@@ -139,7 +193,7 @@ def recovery(character, maxHP):
         character.setHealth(maxHP)
         stats = hero(character.getName(), character.getHealth(), character.getAttack(), character.getRanged(), character.getMagic(), character.getLuck(), character.getDefence(), character.getSkills())
         text_animation('"Oh no. Y-You are i-in-injured. I\'ll h-heal y-you, so d-don\'t wo-worry,"Vega said.')
-        text_animation("You have healed. Your current stats:\n")
+        text_animation("You were healed. Your current stats:\n")
         pprint(vars(stats), sort_dicts=False)
         time.sleep(3)
 
@@ -210,8 +264,8 @@ def enemyGen(levelBoss, finalBoss, difficulty):
     else:
         if levelBoss == False:
             health = random.randint(50*multiplier, 100*multiplier)
-            attack = random.randint(10*multiplier,20*multiplier)
-            special = random.randint(15*multiplier, 35*multiplier)
+            attack = random.randint(10*multiplier,15*multiplier)
+            special = random.randint(15*multiplier, 30*multiplier)
             chance = random.randint(1, 8)
 
             return enemy(adjective + " " + animal, health, attack, special, chance)
@@ -219,7 +273,7 @@ def enemyGen(levelBoss, finalBoss, difficulty):
         else:
             health = random.randint(200, 250)
             attack = random.randint(30, 60)
-            special = random.randint(50, 110)
+            special = random.randint(60, 110)
             chance = random.randint(1, 9)
 
         return enemy(adjective + " " + animal, health, attack, special, chance)
@@ -335,9 +389,26 @@ def loot(luck, genCharacter):
             print(genCharacter.getMagic())
         else:
             if splitItemLine[2] == "luck":
-                genCharacter.setLuck(genCharacter.getLuck() + value)
-                text_animation("Your new LUCK is...")
-                print(genCharacter.getLuck())
+                if genCharacter.getLuck() >= 10:
+                    text_animation("You already have lot of luck.")
+                    text_animation("Let's use the points for something else.")
+                    whichDMG = random.randint(1,3)
+                    if whichDMG == 1:
+                        genCharacter.setAttack(genCharacter.getAttack() + value)
+                        text_animation("Your new ATTACK is...")
+                        print(genCharacter.getAttack())
+                    elif whichDMG == 2:
+                        genCharacter.setRanged(genCharacter.getRanged() + value)
+                        text_animation("Your new RANGED attack is...")
+                        print(genCharacter.getRanged())
+                    else:
+                        genCharacter.setMagic(genCharacter.getMagic() + value)
+                        text_animation("Your new MAGIC is...")
+                        print(genCharacter.getMagic())
+                else:
+                    genCharacter.setLuck(genCharacter.getLuck() + value)
+                    text_animation("Your new LUCK is...")
+                    print(genCharacter.getLuck())
             elif splitItemLine[2] == "health":
                 genCharacter.setHealth(genCharacter.getHealth() + value)
                 text_animation("Your new HEALTH is...")
@@ -469,7 +540,7 @@ def levGenNormal(character, level):
         if i != 0:
             time.sleep(1)
         bossChance = random.randint(1,10)
-        if level == 1:
+        if level <= 2:
             levelBoss = False
             characterDead = battle(enemyGen(levelBoss, False, level), character, levelBoss, False)
             fightOver(characterDead)
@@ -497,7 +568,7 @@ def levGenBoss(character, level):
 
         characterDead = battle(enemyGen(levelBoss, False, level),character,levelBoss, False)
         fightOver(characterDead)
-    recovery(character, 175)
+
 
     levelBoss = False
     characterDead = battle(enemyGen(levelBoss, True, level), character,levelBoss, True)
@@ -915,8 +986,8 @@ def northern_pt1():
     current_code = hack_codes[3]
     text_animation('“This is the main server,” Azriel said. “It looks humongous up close. But it is')
     text_animation('the same as the other servers. It’s just a bit bigger. You need to find the control')
-    text_animation('panel for the last time. The code for this is ' + str(current_code) + '. You know the')
-    text_animation('rest. We’ll wait here for you to finish.”')
+    text_animation('panel for the last time. The code for this is ' + str(current_code) + '')
+    text_animation('You know the rest. We’ll wait here for you to finish.”')
     text_animation('“Won’t you be cold out here?”')
     text_animation('“D-d-don’t worry. W-w-we have s-s-some warmers h-here,” Vega said.')
     text_animation('“I’m not so familiar with the main server. I just know that it has multiple floors')
@@ -1471,6 +1542,7 @@ def intro():
     classData = crateClass()
     character = hero(classData[0], 100, classData[1], classData[2], classData[3], classData[4], classData[5], classData[6])
     current_stats()
+    adding_points()
 
     printWdelay("After that, the weird symbols disappeared.")
     printWdelay("\nAzriel looks satisfied.")

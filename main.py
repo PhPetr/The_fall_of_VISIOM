@@ -6,7 +6,7 @@ import sys
 import pickle
 import os.path
 
-developer = True#TODO: remember to set it false before release
+developer = False#TODO: remember to set it false before release
 
 def text_animation(text):
     global time_speech
@@ -77,38 +77,42 @@ def crateClass():
     print()
     text_animation("‘Oh hello, The chosen one. I know you want powers, but first I The magic scroll\nwant to ask a few questions to know you and know which power I’ll give you...’\n")
     print()
-    role = input(" Are you more strategic (1) or more of a warrior (2)?...")
+    role = input(" Are you more strategic (1) or more of a warrior (2)?... ")
     print()
     while role != "1" and role != "2":
         text_animation("Invalid selection\n")
-        role = input(" Are you more strategic (1) or more of a warrior (2)?...")
+        role = input(" Are you more strategic (1) or more of a warrior (2)?... ")
 
     if role == "1":
         heroAttack = 5
         heroDefence = 10
+        text_animation("'Your ATTACK is " + str(heroAttack) + " and your DEFENCE is " + str(heroDefence) + ".'")
 
     else:
         heroAttack = 10
         heroDefence = 5
+        text_animation("'Your ATTACK is " + str(heroAttack) + " and your DEFENCE is " + str(heroDefence) + ".'")
 
-
-    offense = input(" Are you more of bow and arrow user (1) or a magic user(2)?...")
+    print()
+    offense = input(" Are you more of bow and arrow user (1) or a magic user(2)?... ")
     print()
     while offense != "1" and offense != "2":
         text_animation("Invalid selection\n")
-        offense = input("\n Are you more of bow and arrow user (1) or a magic user(2)?...")
+        offense = input("\n Are you more of bow and arrow user (1) or a magic user(2)?... ")
         print()
 
     if offense == "1":
         heroMagic = 5
         heroRanged = 10
+        text_animation("'Your MAGIC is " + str(heroMagic) + " and your RANGED is " + str(heroRanged) + ".'")
 
     else:
         heroRanged = 5
         heroMagic = 10
+        text_animation("'Your MAGIC is " + str(heroMagic) + " and your RANGED is " + str(heroRanged) + ".'")
 
     text_animation("'Now let\'s roll the dice for your luck'\n")
-    fortune = input("Press enter to roll a dice...")
+    fortune = input("Press enter to roll a dice... ")
     print()
     time.sleep(0.2)
     text_animation("rolling dice...")
@@ -126,50 +130,64 @@ def crateClass():
     heroSkills = "Jack of all trades, Upgrader"
 
     text_animation("'And lastly...'\n")
-    heroName = input("\n What is your name hero?...")
+    heroName = input("\n What is your name hero?... ")
     print()
     text_animation("'Nice to meet you " + heroName + ".'")
     print()
     return(heroName, heroAttack, heroRanged, heroMagic, heroLuck, heroDefence, heroSkills)
-extrapoints = 3
+
+extrapoints = 5 #used for adding to stats
 
 def adding_points():
     global extrapoints
     print()
     text_animation("'I'll give you " + str(extrapoints) + " extra points.'")
     text_animation("'You can choose where to add those points.'")
-    available_stats = ["attack", "ranged", "magic", "luck", "defence"]
+    available_stats = ["health", "attack", "ranged", "magic", "luck", "defence"]
     while extrapoints > 0:
         text_animation("'Where you want to add the points?'")
-        chosenstat = input("Choose between attack, ranged, magic, luck and defence:").lower()
+        print()
+        chosenstat = input("Choose between health, attack, ranged, magic, luck and defence: ").lower()
 
         if chosenstat in available_stats:
             points = how_many_points()
-            if chosenstat == "attack":
+            if chosenstat == "health":
+                extrapoints = extrapoints - points
+                points = points * 10
+                character.setHealth(character.getHealth() + points)
+                text_animation("'Added " + str(points) + " to HEALTH.'")
+                current_stats()
+            elif chosenstat == "attack":
+                extrapoints = extrapoints - points
                 character.setAttack(character.getAttack() + points)
+                text_animation("'Added " + str(points) + " to ATTACK.'")
                 current_stats()
-                extrapoints = extrapoints - points
             elif chosenstat == "ranged":
+                extrapoints = extrapoints - points
                 character.setRanged(character.getRanged() + points)
+                text_animation("'Added " + str(points) + " to RANGED.'")
                 current_stats()
-                extrapoints = extrapoints - points
             elif chosenstat == "magic":
+                extrapoints = extrapoints - points
                 character.setMagic(character.getMagic() + points)
+                text_animation("'Added " + str(points) + " to MAGIC.'")
                 current_stats()
-                extrapoints = extrapoints - points
             elif chosenstat == "luck":
+                extrapoints = extrapoints - points
                 character.setLuck(character.getLuck() + points)
+                text_animation("'Added " + str(points) + " to LUCK.'")
                 current_stats()
-                extrapoints = extrapoints - points
             elif chosenstat == "defence":
-                character.setDefence(character.getDefence() + points)
-                current_stats()
                 extrapoints = extrapoints - points
-            text_animation("'You have " + str(extrapoints) + " extra points left.")
+                character.setDefence(character.getDefence() + points)
+                text_animation("'Added " + str(points) + " to DEFENCE.'")
+                current_stats()
+            text_animation("'You have " + str(extrapoints) + " extra points left.'")
         else:
             text_animation("Invalid choice. Enter only:\n")
             print("\n".join(available_stats))
             continue
+    time.sleep(1)
 
     text_animation("'I The magic scroll shall be your narrator and help you narrow down your decisions.'\n")
 
@@ -415,7 +433,7 @@ def loot(luck, genCharacter):
                 print(genCharacter.getHealth())
 
     stats = hero(genCharacter.getName(), genCharacter.getHealth(), genCharacter.getAttack(), genCharacter.getRanged(), genCharacter.getMagic(), genCharacter.getLuck(), genCharacter.getDefence(), genCharacter.getSkills())
-    text_animation("Your current stats\n")
+    text_animation("Your current stats:\n")
     pprint(vars(stats), sort_dicts=False)
     print()
     time.sleep(4)
@@ -433,13 +451,13 @@ def battle(genEnemy, genCharacter, eliteBoss, finalBoss):
     global time_speech
     global developer
     if developer is False:
-        time_speech = 0.03
+        time_speech = 0.02
     if finalBoss == True:
-        text_animation("Its a FINAL BOSS GUARD..." + genEnemy.getName() + "!")
+        text_animation("It's a FINAL BOSS GUARD..." + genEnemy.getName() + "!")
     elif eliteBoss == True:
-        text_animation("Its an ELITE ENEMY..." + genEnemy.getName() + "!")
+        text_animation("It's an ELITE ENEMY..." + genEnemy.getName() + "!")
     else:
-        text_animation("Its a..." + genEnemy.getName() + "!")
+        text_animation("It's a..." + genEnemy.getName() + "!")
     text_animation("\nCheck out its stats...\n")
     pprint(vars(genEnemy), sort_dicts=False)
     time.sleep(4)
@@ -629,7 +647,7 @@ def roll_credits():
     text_animation("")
     text_animation("         CREDITS         ")
     text_animation("")
-    text_animation("Everything done by PhPetr")
+    text_animation("   Developed by PhPetr   ")
     text_animation("")
     text_animation("  Where you can find me: ")
     text_animation("    github.com/PhPetr")
@@ -1769,7 +1787,7 @@ def explain_stats():
     text_animation(" Attack – damage dealt by your melee attack")
     text_animation(" Range – damage dealt by your ranged attack")
     text_animation(" Magic – damage dealt by your magic attack")
-    text_animation(" Luck – your luck affects the chance of causing damage to the enemy, etc.")
+    text_animation(" Luck – your luck affects hit chance, lott drop rate, etc.")
     text_animation(" Defence – the damage gained is determined by the difference")
     text_animation("           between the defence and the value of the enemy's attack")
     text_animation("\nEnemies statistics are health, attack, special and chance.")

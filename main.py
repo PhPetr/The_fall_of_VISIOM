@@ -306,14 +306,14 @@ def enemyAttack(hitChance, attackValue, name, defence, specialValue):
         if specialLoss <= 0:
             print()
             text_animation(name + "is winding up for a SPECIAL attack...")
-            text_animation("The special attack hits hero, but it dealt 0 damage.")
+            text_animation("The special attack hits you, but it dealt 0 damage.")
             return 0
         else:
             print()
             text_animation(name + "is winding up for a SPECIAL attack...")
             hit = random.randint(0, 10)
             if hitChance >= hit:
-                text_animation("The special attack hits the hero!!!")
+                text_animation("The special attack hits you!!!")
                 text_animation("You stagger losing..." + str(specialLoss) + " health.")
                 return math.ceil(specialLoss)
             else:
@@ -326,14 +326,14 @@ def enemyAttack(hitChance, attackValue, name, defence, specialValue):
         if loss <= 0:
             print()
             text_animation(name + "is winding up for an attack...")
-            text_animation("The attack hits hero, but it dealt 0 damage.")
+            text_animation("The attack hits you, but it dealt 0 damage.")
             return 0
         else:
             print()
             text_animation(name + "is winding up for an attack...")
             hit = random.randint(0, 10)
             if hitChance >= hit:
-                text_animation("The attack hits the hero!!!")
+                text_animation("The attack hits you!!!")
                 text_animation("You stagger losing..." + str(loss) + " health.")
                 return math.ceil(loss)
             else:
